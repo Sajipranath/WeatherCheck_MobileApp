@@ -1,24 +1,20 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, ScrollView, Switch } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Fontisto from 'react-native-vector-icons/Fontisto'
+import { StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity, ScrollView, Switch, PermissionsAndroid, Platform  } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {debounce} from 'lodash';
-import { fetchLocations,fetchWeatherForecast } from '../api/WeatherApi';
+import { fetchWeatherForecast } from '../api/WeatherApi';
 //import Lottie from "react-lottie";
 
 export default function HomeScreen({navigation, route}) {
-    const [search, setSearch] = useState(false);
-    const [locations, setLocations] = useState([]);
     const [weather, setWeather] = useState({});
     const [loading, setLoading] = useState(true);
     const [isCelsius, setIsCelsius] = useState(true);
+    const [latitude, setLatitude] = useState(null);
+    const [longitude, setLongitude] = useState(null);
     
      const handleSwitch = () => {
-  
-      setIsCelsius((previousState) => !previousState);
+        setIsCelsius((previousState) => !previousState);
     };
 
     const {current, location} = weather;
@@ -49,6 +45,7 @@ export default function HomeScreen({navigation, route}) {
         }
     }, [route.params?.weatherData]);
 
+   
     
     const fetchLocalWeatherData = async () => (
       fetchWeatherForecast({
@@ -69,69 +66,69 @@ export default function HomeScreen({navigation, route}) {
         <SafeAreaView className="flex flex-1" >
         
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'flex-end', paddingHorizontal: 10 }}>
-          <Text style={{ marginRight: 10, color:'#fff' }}>Mode &#176;F</Text>
+        <View className="flex-row items-center justify-end px-10">
+          <Text className="mr-4 text-white">Mode &#176;F</Text>
           <Switch
             onValueChange={handleSwitch}
             value={isCelsius}
-            trackColor={{ false: '#7a7b7d', true: 'white' }}
-            thumbColor={isCelsius ? '#7a7b7d' : 'white'}
-            ios_backgroundColor="gray"
-            style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }} // Adjust the size here
+            trackColor={{ false: 'bg-gray-500', true: 'bg-white' }}
+            thumbColor={isCelsius ? 'bg-gray-500' : 'bg-white'}
+            style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }} // This inline style can't be directly translated into Tailwind CSS
+            className="transform scale-150" // Instead, you can apply the transformation using Tailwind CSS classes
           />
-          <Text style={{ marginLeft: 10, color:'#fff' }}>&#176;C</Text>
+          <Text className="ml-4 text-white">&#176;C</Text>
         </View>
 
-        <View className="mx-4 flex justify-around flex-1 mb-2">
-          {/* location */}
-          <Text className="text-white text-center text-2xl font-bold">
-          {location?.name},
-            <Text className="text-2xl font-semibold">
-            {' ' +location?.country}
+      <View className="flex-1 flex-row mt-10">
+          <View className="mx-4 flex justify-start flex-1 mb-2">
+            
+            <Text className="text-white text-center text-3xl font-bold">
+            {location?.name},
+              
             </Text>
-          </Text>
+            <Text className="text-white text-center text-lg font-semibold">
+              {' ' +location?.country}
+              </Text>
 
-          {/* weather image */}
-          <View className="flex-row justify-center">
-          <MaterialCommunityIcons name="weather-cloudy" size={100} color="yellow"
-          className="w-52 h-52"
-          />
-          </View>
-          {/* degree celcius */}
-            <View className="space-y-2">
-              <Text className="text-center font-bold text-white text-6xl ml-5">
-                {isCelsius ? `${current?.temp_c} °C` : `${current?.temp_f} °F`}
-              </Text>
-              <Text className="text-center text-white text-xl tracking-widest">
-                {current?.condition?.text}
-              </Text>
+            
+            <View className="flex-row justify-center">
+              <Image  source={{ uri: 'https:' + current?.condition?.icon }}style={{ width: 120, height: 120 }}/>
             </View>
-            <View className="flex-row justify-between mx-4">
-              <View className="flex-row space-x-2 items-center">
-                <MaterialCommunityIcons name="weather-windy" size={40} color="yellow" className="w-52 h-52" />
-                <Text className="text-white font-semibold text-base">
-                {current?.wind_kph} Km
+            
+              <View className="space-y-2">
+                <Text className="text-center font-bold text-white text-5xl ml-5 leading-60">
+                  {isCelsius
+                    ? `${current?.temp_c} °C`
+                    : <View><Text>{current?.temp_f}</Text></View>}
+                </Text>
+
+
+
+                <Text className="text-center text-white text-xl tracking-widest">
+                  {current?.condition?.text}
                 </Text>
               </View>
-              <View className="flex-row space-x-2 items-center">
-                <Entypo name="drop" size={40} color="yellow" className="w-52 h-52" />
-                <Text className="text-white font-semibold text-base">
-                {current?.humidity}
-                
-                </Text>
+            </View>
+              <View className="flex-column justify-start mx-4 mt-4">
+                <View className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-3 mx-4 mt-4" style={{backgroundColor: '#7a7b7d' }}>
+                  <MaterialCommunityIcons name="weather-windy" size={40} color="yellow" className="w-52 h-52" />
+                  <Text className="text-white font-semibold text-base">
+                  {current?.wind_kph} Km
+                  </Text>
+                </View>
+                <View className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-3 mx-4 mt-4" style={{backgroundColor: '#7a7b7d' }}>
+                  <Entypo name="drop" size={40} color="yellow" className="w-52 h-52" />
+                  <Text className="text-white font-semibold text-base">
+                  {current?.humidity}
+                  
+                  </Text>
+                </View>
               </View>
-              <View className="flex-row space-x-2 items-center">
-                <MaterialCommunityIcons name="weather-sunny" size={40} color="yellow" className="w-52 h-52" />
-                <Text className="text-white font-semibold text-base">
-                6:05 AM
-                </Text>
-              </View>
-          </View>
-        </View>
+      </View>
         <View className="mb-2 space-y-3">
           <View className="flex-row items-center mx-5 space-x-2">
             <Entypo name="calendar" size={22} color="white" className="w-52 h-52" />
-            <Text className="text-white text-base"> Daily forecast</Text>
+            <Text className="text-white text-base"> Daily Weather</Text>
           </View>
           <ScrollView horizontal contentContainerStyle={{paddingHorizontal: 15}}
             showsHorizontalScrollIndicator={false}>
@@ -145,10 +142,10 @@ export default function HomeScreen({navigation, route}) {
                   return(
                     <View key={index} className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-3"
                       style={{backgroundColor: '#7a7b7d' }}>
-                      <MaterialCommunityIcons name="weather-sunny" size={40} color="yellow" className="h-11 w-11" />
+                      <Image  source={{ uri: 'https:' + item?.day?.condition?.icon }}style={{ width: 52, height: 52 }}/>
                       <Text className="text-white">{day}</Text>
                       <Text className="text-white text-xl font-semibold">
-                        {isCelsius ? `${current?.temp_c} °C` : `${current?.temp_f} °F`}
+                        {isCelsius ? `${item?.day?.avgtemp_c} °C` : `${item?.day?.avgtemp_f} °F`}
                       </Text>
                     </View>
                   )
