@@ -63,7 +63,6 @@ export default function SearchScreen() {
     <View className="relative" style={styles.container}>
       <StatusBar style="dark" />
       <View className="mx-4 flex justify-around flex-1 mb-2">
-        {/* location */}
         <Text className="text-white text-center text-2xl font-bold">
           Weather Search App
         </Text>

@@ -29,8 +29,7 @@ export default function Navigation() {
             } else if (rn === SearchPage) {
                 iconName = focused ? 'search' : 'search-outline';
             }
-            //console.log('IconName:', iconName);
-            // Return home or search component
+            
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: '#fff',

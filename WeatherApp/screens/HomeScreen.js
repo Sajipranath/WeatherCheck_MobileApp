@@ -73,8 +73,8 @@ export default function HomeScreen({navigation, route}) {
             value={isCelsius}
             trackColor={{ false: 'bg-gray-500', true: 'bg-white' }}
             thumbColor={isCelsius ? 'bg-gray-500' : 'bg-white'}
-            style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }} // This inline style can't be directly translated into Tailwind CSS
-            className="transform scale-150" // Instead, you can apply the transformation using Tailwind CSS classes
+            style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }} 
+            className="transform scale-150" 
           />
           <Text className="ml-4 text-white">&#176;C</Text>
         </View>
