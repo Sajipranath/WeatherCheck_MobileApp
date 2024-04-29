@@ -109,17 +109,17 @@ export default function HomeScreen({navigation, route}) {
                 </Text>
               </View>
             </View>
-              <View className="flex-column justify-start mx-4 mt-4">
-                <View className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-3 mx-4 mt-4" style={{backgroundColor: '#7a7b7d' }}>
+              <View className="flex-column justify-start mx-6 mt-4">
+                <View className="flex justify-center items-center w-24 rounded-full py-3 space-y-1 mr-3 mx-0 mt-6" style={{backgroundColor: '#7a7b7d' }}>
                   <MaterialCommunityIcons name="weather-windy" size={40} color="yellow" className="w-52 h-52" />
                   <Text className="text-white font-semibold text-base">
-                  {current?.wind_kph} Km
+                  {current?.wind_kph} KmpH
                   </Text>
                 </View>
-                <View className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-3 mx-4 mt-4" style={{backgroundColor: '#7a7b7d' }}>
+                <View className="flex justify-center items-center w-24 rounded-full py-3 space-y-1 mr-3 mx-0 mt-8" style={{backgroundColor: '#7a7b7d' }}>
                   <Entypo name="drop" size={40} color="yellow" className="w-52 h-52" />
                   <Text className="text-white font-semibold text-base">
-                  {current?.humidity}
+                  {current?.humidity}%
                   
                   </Text>
                 </View>
